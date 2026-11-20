@@ -194,11 +194,18 @@ final class App: NSObject, NSApplicationDelegate, NSWindowDelegate {
                 return OSStatus(eventNotHandledErr)
             }
             let app = Unmanaged<App>.fromOpaque(userData).takeUnretainedValue()
-            DispatchQueue.main.async { app.refreshClipboard() }
+            DispatchQueue.main.async { app.toggleHotKey() }
             return noErr
         }, 1, &eventType, selfPtr, &hotKeyHandler)
         let hotKeyID = EventHotKeyID(signature: 0x4D504B31, id: 1)
         RegisterEventHotKey(UInt32(kVK_ANSI_L), UInt32(controlKey | optionKey | cmdKey), hotKeyID, GetEventDispatcherTarget(), 0, &hotKeyRef)
+    }
+    func toggleHotKey() {
+        if panel.isVisible {
+            close()
+        } else {
+            refreshClipboard()
+        }
     }
     @objc func previewClipboardService(_ pasteboard: NSPasteboard, userData: String?, error: AutoreleasingUnsafeMutablePointer<NSString?>) {
         // Ignore the service pasteboard; always read explicitly copied text from the general clipboard.

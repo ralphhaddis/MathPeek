@@ -31,6 +31,7 @@ def build(root: Path, *, clean: bool = False) -> Path:
         CFBundleIdentifier='com.mathpeek.app',
         CFBundleName='MathPeek',
         CFBundleExecutable='MathPeek',
+        CFBundleIconFile='AppIcon',
         CFBundlePackageType='APPL',
         CFBundleVersion='1',
         CFBundleShortVersionString='0.1',
@@ -48,6 +49,9 @@ def build(root: Path, *, clean: bool = False) -> Path:
     )
     (app / 'Contents/Info.plist').write_bytes(plistlib.dumps(info))
     shutil.copy2(root / 'render.py', resources / 'render.py')
+    icon_path = root / 'AppIcon.icns'
+    if icon_path.is_file():
+        shutil.copy2(icon_path, resources / 'AppIcon.icns')
 
     pillow_bundle = resources / 'python'
     if clean and pillow_bundle.exists():
